@@ -76,6 +76,17 @@ CREATE TABLE IF NOT EXISTS Fines (
     Paid BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (LoanID) REFERENCES Loans(LoanID)
 );
+
+-- Create FineHistory Table
+CREATE TABLE IF NOT EXISTS FineHistory (
+    FineHistoryID INT AUTO_INCREMENT PRIMARY KEY,
+    FineID INT,
+    BorrowerID INT,
+    PaidDate DATE,
+    FOREIGN KEY (FineID) REFERENCES Fines(FineID),
+    FOREIGN KEY (BorrowerID) REFERENCES Borrowers(BorrowerID)
+);
+
 -- Fine calculations
 INSERT INTO Fines (LoanID, Amount, Paid)
 SELECT LoanID, DATEDIFF(CURDATE(), DueDate) * 0.50, FALSE
