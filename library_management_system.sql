@@ -68,3 +68,17 @@ UPDATE Books SET IsCheckedOut = TRUE WHERE BookID = 3;
 -- Return Process
 UPDATE Loans SET ReturnDate = CURDATE() WHERE BookID = 3 AND ReturnDate IS NULL;
 UPDATE Books SET IsCheckedOut = FALSE WHERE BookID = 3;
+-- Create Fines Table
+CREATE TABLE IF NOT EXISTS Fines (
+    FineID INT AUTO_INCREMENT PRIMARY KEY,
+    LoanID INT,
+    Amount DECIMAL(5, 2),
+    Paid BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (LoanID) REFERENCES Loans(LoanID)
+);
+--Fine calculations
+INSERT INTO Fines (LoanID, Amount, Paid)
+SELECT LoanID, DATEDIFF(CURDATE(), DueDate) * 0.50, FALSE
+FROM Loans
+WHERE BookID = ? AND ReturnDate IS NULL AND CURDATE() > DueDate;
+
